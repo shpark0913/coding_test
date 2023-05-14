@@ -8,7 +8,7 @@ import sys
 
 input = sys.stdin.readline
 
-def bfs(graph, a, b):
+def bfs(a, b):
     graph[a][b] = 0
     queue = deque([[a, b]])
     dx = [-1, 1, 0, 0, -1, -1, 1, 1]
@@ -29,18 +29,18 @@ while 1:
     if [w, h] == [0, 0]: break
 
     # 지도를 나타 내는 이중 리스트
-    maps = []
+    graph = []
 
     # 섬의 개수
     islands = 0
 
     for _ in range(h):
-        maps.append(list(map(int, input().split())))
+        graph.append(list(map(int, input().split())))
 
     for i in range(h):
         for j in range(w):
-            if maps[i][j] == 1:
-                bfs(maps, i, j)
+            if graph[i][j] == 1:
+                bfs(i, j)
                 islands += 1
 
     print(islands)
