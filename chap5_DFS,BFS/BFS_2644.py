@@ -2,38 +2,52 @@
 # https://www.acmicpc.net/problem/2644
 # Python3 / 메모리 : KB / 시간 : ms
 # PyPy3 / 메모리 : KB / 시간 : ms
+from collections import deque
+import sys
 
-# 전략 : DFS 로 풀기
-# DFS 계산해서 cnt가 가장 적은 순간을 답으로 할 것
-# 단, -1 출력해야 하는 경우를 잘 생각할 것
+input = sys.stdin.readline
 
-def dfs(graph, visited, v, s):
-    global cnt
-    visited[v] = True
-    if v == s:
-        return cnt
-    for i in graph[v]:
-        if not visited[i]:
-            cnt += 1
-            dfs(graph, visited, i)
-
-# 전체 사람의 수
+# 사람의 수
 n = int(input())
 
-# 촌수를 계산해야 하는 서로 다른 두 사람의 번호
+# 촌수를 계산해야 하는 두 사람의 번호
 a, b = map(int, input().split())
 
-# 부모 자식들 간의 관계의 개수
+# 부모 자식 관계의 개수
 m = int(input())
 
+# 부모, 자식 관계를 담는 리스트
 relations = [[] for _ in range(101)]
-visited = [[] for _ in range(101)]
 
-cnt = 0
+# 방문 기록
+visited = [False for _ in range(101)]
+
+# 촌수 기록하는 object
+relations_object = {}
 
 for _ in range(m):
-    personA, personB = map(int, input().split())
-    relations[personA].append(personB)
-    relations[personB].append(personA)
+    x, y = map(int, input().split())
+    relations[x].append(y)
+    relations[y].append(x)
 
-print(dfs)
+def bfs(V, S):
+    queue = deque([V])
+    relation = 1
+    while queue:
+        q = queue.popleft()
+        visited[q] = True
+        for i in relations[q]:
+            if not visited[i]:
+                queue.append(i)
+                if i in relations_object.keys():
+                    relations_object[i].append(relation)
+                else:
+                    relations_object[i] = [relation]
+        relation += 1
+
+bfs(a, b)
+print(relations_object)
+if b in relations_object.keys():
+    print(min(relations_object[b]))
+else:
+    print(-1)
