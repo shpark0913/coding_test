@@ -1,3 +1,7 @@
+# 백준 2805 (실버 2)
+# https://www.acmicpc.net/problem/2805
+# Python3 / 메모리 : 31732KB / 시간 : 308ms
+
 import sys
 input = sys.stdin.readline
 
@@ -7,38 +11,22 @@ N, M = map(int, input().split())
 # 나무의 높이들
 trees = sorted(list(map(int, input().split())))
 
-cancut = []
+start = 0
+end = trees[-1]
+result = 0
 
-def binary_search(graph, target, start, end):
+while start <= end:
+    total = 0
+    mid = (start + end) // 2
+    for tree in trees:
+        if tree > mid:
+            total += (tree - mid)
 
-    while start <= end:
-        mid = (start + end) // 2
+    if total < M:
+        end = mid - 1
 
-        trees_sum = sum(graph[mid:]) - len(graph[mid:]) * graph[mid]
+    elif total >= M:
+        result = mid
+        start = mid + 1
 
-        if trees_sum > target:
-            cancut.append([graph[mid], mid])
-            start = mid + 1
-
-        elif trees_sum < target:
-            end = mid - 1
-
-        else:
-            cancut.append([graph[mid], mid])
-            return cancut
-
-binary_search(trees, M, 0, len(trees) - 1)
-
-cancut = sorted(cancut, key=lambda x : x[1])
-
-idx = cancut[-1][1]
-max_height = cancut[-1][0]
-print(max_height)
-while 1:
-    val = sum(trees[idx + 1:]) - max_height * (len(trees[idx + 1:]))
-    if val > M:
-        max_height += 1
-    else:
-        break
-
-print(max_height)
+print(result)
